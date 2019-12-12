@@ -8,22 +8,15 @@
 
 import Foundation
 
-func isValid(_ i: Int) -> Bool {
-    let a = Array(String(i))
-    let c = a.map { $0.wholeNumberValue }
+func isValidPart1(_ c: [Int]) -> Bool {
     if c.count != 6 {
         return false
     }
-    guard var previousCharacter: Int = c[0] else {
-        fatalError()
-    }
+    var previousCharacter = c[0]
     var hasAdjacentDigits = false
     var digitsDecrease = false
     for i in 1..<c.count {
-        guard let t: Int = c[i] else
-        {
-            fatalError()
-        }
+        let t: Int = c[i]
         if t == previousCharacter {
             hasAdjacentDigits = true
         }
@@ -35,14 +28,39 @@ func isValid(_ i: Int) -> Bool {
     return hasAdjacentDigits && !digitsDecrease
 }
 
-func main() {
-    var validInts: [Int] = []
-    for i in 234208...765869 {
-        if isValid(i) {
-            validInts.append(i)
+func isValidPart2(_ c: [Int]) -> Bool {
+    var runCount = 1
+    var previousCharacter = c[0]
+    for i in 1..<c.count {
+        let t = c[i]
+        if t == previousCharacter {
+            runCount += 1
+        } else {
+            if runCount == 2 {
+                return true
+            } else {
+                runCount = 1
+                previousCharacter = t
+            }
         }
     }
-    print(validInts.count)
+    return runCount == 2
+}
+
+func main() {
+    var validIntsPart1: [Int] = []
+    var validIntsPart2: [Int] = []
+    for i in 234208...765869 {
+        let c = Array(String(i)).map { $0.wholeNumberValue! }
+        if isValidPart1(c) {
+            validIntsPart1.append(i)
+            if isValidPart2(c) {
+                validIntsPart2.append(i)
+            }
+        }
+    }
+    print(validIntsPart1.count)
+    print(validIntsPart2.count)
 }
 
 main()
